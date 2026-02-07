@@ -4,6 +4,7 @@ import path from "path";
 import Directory from "../models/directoryModel.js";
 import File from "../models/fileModel.js";
 import User from "../models/userModel.js";
+import { createuploadSignedUrl } from "../config/s3.js";
 
 export async function updateDirectoriesSize(parentId, deltaSize) {
   while (parentId) {
@@ -171,3 +172,61 @@ export const deleteFile = async (req, res, next) => {
     next(err);
   }
 };
+
+export const uploadInitiate = async (req, res) => {
+   const parentDirId = req.body.parentDirId || req.user.rootDirId;
+ console.log("initiate upload called with parentDirId", req.body)
+
+  try {
+ console.log("try block")   
+
+
+    const parentDirData = await Directory.findOne({
+      _id: parentDirId,
+      userId: req.user._id,
+    });
+
+    // Check if parent directory exists
+    if (!parentDirData) {
+      return res.status(404).json({ error: "Parent directory not found!" });
+    }
+
+    const filename = req.body.name || "untitled";
+    const filesize = req.body.size;
+
+    const user = await User.findById(req.user._id);
+    const rootDir = await Directory.findById(req.user.rootDirId);
+
+    const remainingSpace = user.maxStorageInBytes - rootDir.size;
+
+    if (filesize > remainingSpace) {
+      console.log("File too large");
+      return res.status(507).json({ error: "Not enough storage space!" });
+    }
+
+    const extension = path.extname(filename);
+
+    const insertedFile = await File.insertOne({
+      extension,
+      name: filename,
+      size: filesize,
+      parentDirId: parentDirData._id,
+      userId: req.user._id,
+      isUploading: true,
+    });
+
+ const uploadUrl = await createuploadSignedUrl(
+  `${insertedFile.id}${extension}`,
+  req.body.contentType
+);
+
+    console.log("uploadurl",uploadUrl)
+    return res.json({uploadUrl,fileId:insertedFile.id});
+
+
+
+  } catch (error) {
+    console.log("error in upload initiate",error)
+     res.status(500).json({ error: "Failed to initiate upload" });
+  }
+}

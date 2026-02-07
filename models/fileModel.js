@@ -6,6 +6,11 @@ const fileSchema = new Schema(
       type: String,
       required: true,
     },
+    isUploading: {
+      type:Boolean,
+      default:false,
+
+    },
     size: {
       type: Number,
       required: true,
@@ -21,7 +26,7 @@ const fileSchema = new Schema(
     parentDirId: {
       type: Schema.Types.ObjectId,
       ref: "Directory",
-    },
+    }
   },
   {
     strict: "throw",
