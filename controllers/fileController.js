@@ -4,7 +4,7 @@ import path from "path";
 import Directory from "../models/directoryModel.js";
 import File from "../models/fileModel.js";
 import User from "../models/userModel.js";
-import { createuploadSignedUrl } from "../config/s3.js";
+import { createGetSignedUrl, createuploadSignedUrl } from "../config/s3.js";
 
 export async function updateDirectoriesSize(parentId, deltaSize) {
   while (parentId) {
@@ -115,6 +115,21 @@ export const getFile = async (req, res) => {
   }
 
   // If "download" is requested, set the appropriate headers
+const fileurl = await createGetSignedUrl({ key: `${id}${fileData.extension}`,filename:fileData.name });
+
+   if(req.query.action =="download"){
+    const fileurl =await createGetSignedUrl({
+      key: `${id}${fileData.extension}`,
+      download:true,
+      filename:fileData.name
+    });
+
+   return res.redirect(fileurl);
+
+   }
+
+
+  return res.redirect(fileurl)
   const filePath = `${process.cwd()}/storage/${id}${fileData.extension}`;
 
   if (req.query.action === "download") {
