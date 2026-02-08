@@ -4,6 +4,7 @@ import {
   deleteFile,
   getFile,
   renameFile,
+  uploadComplete,
   uploadFile,
   uploadInitiate,
 } from "../controllers/fileController.js";
@@ -12,6 +13,8 @@ const router = express.Router();
 
 
 router.post("/upload/initiate", uploadInitiate);
+router.post("/upload/complete", uploadComplete);
+
 router.param("parentDirId", validateIdMiddleware);
 router.param("id", validateIdMiddleware);
 

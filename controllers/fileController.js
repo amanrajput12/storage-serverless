@@ -4,7 +4,7 @@ import path from "path";
 import Directory from "../models/directoryModel.js";
 import File from "../models/fileModel.js";
 import User from "../models/userModel.js";
-import { createGetSignedUrl, createuploadSignedUrl } from "../config/s3.js";
+import { createGetSignedUrl, createuploadSignedUrl, gets3FileMetadata } from "../config/s3.js";
 
 export async function updateDirectoriesSize(parentId, deltaSize) {
   while (parentId) {
@@ -103,6 +103,7 @@ export const uploadFile = async (req, res, next) => {
   }
 };
 
+// do change in this 
 export const getFile = async (req, res) => {
   const { id } = req.params;
   const fileData = await File.findOne({
@@ -188,6 +189,8 @@ export const deleteFile = async (req, res, next) => {
   }
 };
 
+
+// create by me for s3 upload integration
 export const uploadInitiate = async (req, res) => {
    const parentDirId = req.body.parentDirId || req.user.rootDirId;
  console.log("initiate upload called with parentDirId", req.body)
@@ -244,4 +247,42 @@ export const uploadInitiate = async (req, res) => {
     console.log("error in upload initiate",error)
      res.status(500).json({ error: "Failed to initiate upload" });
   }
+}
+
+// upload complete by me for s3 upload integration
+
+export const uploadComplete = async (req, res,next) => {
+      console.log("upload complete called with fileId", req.body.fileId)
+
+      const file = await File.findById(req.body.fileId);
+
+    if(!file){
+      return res.status(404).json({ error: "File not found in our records!" });
+
+    }
+   const filedata = await   gets3FileMetadata(`${req.body.fileId}${file.extension}`);
+
+  //  console.log("metadata from s3",filedata);
+
+ try {
+
+   if(filedata.ContentLength != file.size){
+    await file.deleteOne();
+    return res.status(400).json({ error: "Uploaded file size does not match expected size!" });
+   }
+  file.isUploading = false;
+  await file.save();
+   const respp = await  updateDirectoriesSize(file.parentDirId, file.size);
+  res.json({message:"Upload marked as complete"})
+
+ } catch (error) {
+  console.log("Error in uploadComplete", error);
+await file.deleteOne();
+  return res.status(500).json({ error: "file could not be uploaded properly!" });
+ }
+
+
+
+
+    
 }

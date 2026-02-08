@@ -1,5 +1,5 @@
 
-import { GetObjectCommand, PutObjectCommand,S3Client } from "@aws-sdk/client-s3";
+import { GetObjectCommand, HeadObjectCommand, PutObjectCommand,S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 
@@ -44,4 +44,15 @@ const s3 = new S3Client({
   console.log("Presigned GET URL:", url);
   return url;
 };
+
+
+export const gets3FileMetadata = async (key) => {
+const command = new HeadObjectCommand({
+    Bucket: "nodejs-notes-aws-s3-crud",
+    Key: key, // ✅ MUST come from argument`
+  });
+  const response = await s3.send(command);
+  return response;
+
+}
 
