@@ -2,6 +2,8 @@ import { rm } from "fs/promises";
 import Directory from "../models/directoryModel.js";
 import File from "../models/fileModel.js";
 import { updateDirectoriesSize } from "./fileController.js";
+import { Delete$ } from "@aws-sdk/client-s3";
+import { DeletesFiles } from "../config/s3.js";
 
 export const getDirectory = async (req, res) => {
   const user = req.user;
@@ -110,9 +112,15 @@ export const deleteDirectory = async (req, res, next) => {
 
     const { files, directories } = await getDirectoryContents(id);
 
-    for (const { _id, extension } of files) {
-      await rm(`./storage/${_id.toString()}${extension}`);
-    }
+  //  update by me for s3 integration to delete files from s3 when directory is deleted
+
+
+ const keys =files.map(({_id,extension})=>({Key:`${_id}${extension}`}));
+ console.log("keys are ",keys);
+ const deleteresp = await DeletesFiles(keys);
+ 
+
+  //  till here
 
     await File.deleteMany({
       _id: { $in: files.map(({ _id }) => _id) },

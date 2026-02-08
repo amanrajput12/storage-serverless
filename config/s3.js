@@ -1,5 +1,5 @@
 
-import { GetObjectCommand, HeadObjectCommand, PutObjectCommand,S3Client } from "@aws-sdk/client-s3";
+import { DeleteObjectCommand, DeleteObjectsCommand, GetObjectCommand, HeadObjectCommand, PutObjectCommand,S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 
@@ -56,3 +56,32 @@ const command = new HeadObjectCommand({
 
 }
 
+export const Deletes3File = async (key) => {
+  console.log("Deleting S3 file with key:", key);
+  const command = new DeleteObjectCommand({
+    Bucket: "nodejs-notes-aws-s3-crud",
+    Key: key, // ✅ MUST come from argument`
+  });
+  const response = await getSignedUrl(s3, command, {
+    expiresIn: 300,
+  });
+  // console.log("Presigned DELETE URL:", response);
+  return response;
+}
+
+export const DeletesFiles= async (keys) => {
+  console.log("Deleting multiple S3 files with keys:", keys);
+
+const command = new DeleteObjectsCommand({
+  Bucket: "nodejs-notes-aws-s3-crud",
+  Delete: {
+    Objects: keys,
+    Quiet: false, // set true to skip individual delete responses
+  },
+});
+
+const response = await s3.send(command);
+console.log("Deleted:", response.Deleted);
+console.log("Errors:", response.Errors);
+
+  }
