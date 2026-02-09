@@ -28,6 +28,12 @@ app.use(
   })
 );
 
+app.get("/",(req,res)=>{
+res.json({message:"Hello Aman"})
+
+}
+);
+
 app.use("/directory", checkAuth, directoryRoutes);
 app.use("/file", checkAuth, fileRoutes);
 app.use("/", userRoutes);
