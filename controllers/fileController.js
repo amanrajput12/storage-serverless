@@ -5,6 +5,7 @@ import Directory from "../models/directoryModel.js";
 import File from "../models/fileModel.js";
 import User from "../models/userModel.js";
 import { createGetSignedUrl, createuploadSignedUrl, Deletes3File, gets3FileMetadata } from "../config/s3.js";
+import { createCloudfrontSignedUrl } from "../config/cloudfront.js";
 
 export async function updateDirectoriesSize(parentId, deltaSize) {
   while (parentId) {
@@ -116,14 +117,28 @@ export const getFile = async (req, res) => {
   }
 
   // If "download" is requested, set the appropriate headers
-const fileurl = await createGetSignedUrl({ key: `${id}${fileData.extension}`,filename:fileData.name });
+// const fileurl = await createGetSignedUrl({ key: `${id}${fileData.extension}`,filename:fileData.name });
+
+const fileurl = await  createCloudfrontSignedUrl({
+  key: `${id}${fileData.extension}`,
+  filename:fileData.name
+});
+console.log("Cloudfront Signed URL controller:", fileurl);
 
    if(req.query.action =="download"){
-    const fileurl =await createGetSignedUrl({
+    // const fileurl =await createGetSignedUrl({
+    //   key: `${id}${fileData.extension}`,
+    //   download:true,
+    //   filename:fileData.name
+    // });
+
+  const fileurl =await createCloudfrontSignedUrl({
       key: `${id}${fileData.extension}`,
       download:true,
       filename:fileData.name
     });
+
+
 
    return res.redirect(fileurl);
 

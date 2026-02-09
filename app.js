@@ -1,3 +1,6 @@
+
+import './config/env.js';
+
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -8,9 +11,12 @@ import authRoutes from "./routes/authRoutes.js";
 import checkAuth from "./middlewares/authMiddleware.js";
 import { connectDB } from "./config/db.js";
 
+
 await connectDB();
 
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT;
+console.log("Server starting on port", PORT,process.env.CLOUDFRONT_PRIVATE_KEY );
+
 
 const app = express();
 app.use(cookieParser(process.env.SESSION_SECRET));
