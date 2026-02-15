@@ -25,28 +25,28 @@ app.use(express.json());
 
 
 // read allowed origins from env
+
 const allowedOrigins = [
   process.env.CLIENT_URL_1,
   process.env.CLIENT_URL_2,
   process.env.CLIENT_URL_3
-].filter(Boolean) // removes undefined values
+].filter(Boolean);
 
-var corsOptions = {
+app.use(cors({
   origin: function (origin, callback) {
 
-    // allow requests without origin (Postman, curl, mobile apps)
-    if (!origin) return callback(null, true)
+    if (!origin) return callback(null, true);
 
     if (allowedOrigins.includes(origin)) {
-      callback(null, true)
-    } else {
-      callback(new Error("Not allowed by CORS"))
+      return callback(null, true);
     }
-  }
-}
 
-// apply globally (recommended)
-app.use(cors(corsOptions))
+    console.log("Blocked by CORS:", origin);
+    callback(new Error("Not allowed by CORS"));
+  },
+  credentials: true   // ⭐ VERY IMPORTANT
+}));
+  
 
 
 app.get("/",(req,res)=>{
