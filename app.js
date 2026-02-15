@@ -21,13 +21,6 @@ console.log("Server starting on port", PORT,process.env.CLOUDFRONT_PRIVATE_KEY )
 const app = express();
 app.use(cookieParser(process.env.SESSION_SECRET));
 app.use(express.json());
-app.use(
-  cors({
-    origin: process.env.CLIENT_URL,
-    credentials: true,
-  })
-);
-
 
 
 
