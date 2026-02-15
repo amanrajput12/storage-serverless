@@ -21,13 +21,46 @@ console.log("Server starting on port", PORT,process.env.CLOUDFRONT_PRIVATE_KEY )
 const app = express();
 app.use(cookieParser(process.env.SESSION_SECRET));
 app.use(express.json());
-app.use(
-  cors({
-    origin: process.env.CLIENT_URL,
-    credentials: true,
-  })
-);
+// app.use(
+//   cors({
+//     origin: process.env.CLIENT_URL,
+//     credentials: true,
+//   })
+// );
 
+
+
+
+// read allowed origins from env
+const allowedOrigins = [
+  process.env.CLIENT_URL_1,
+  process.env.CLIENT_URL_2,
+  process.env.CLIENT_URL_3
+].filter(Boolean) // removes undefined values
+
+var corsOptions = {
+  origin: function (origin, callback) {
+
+    // allow requests without origin (Postman, curl, mobile apps)
+    if (!origin) return callback(null, true)
+
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true)
+    } else {
+      callback(new Error("Not allowed by CORS"))
+    }
+  }
+}
+
+// apply globally (recommended)
+app.use(cors(corsOptions))
+
+
+app.get("/",(req,res)=>{
+res.json({message:"Hello Aman"})
+
+}
+);
 app.use("/directory", checkAuth, directoryRoutes);
 app.use("/file", checkAuth, fileRoutes);
 app.use("/", userRoutes);
