@@ -14,8 +14,8 @@ const keyPairId = "K3CE296GJ496XA";
 
 export const createCloudfrontSignedUrl = async ({ key, download = false, filename }) => {
 
-  // Test for 5 minutes validity
-  const dateLessThan = new Date(Date.now() + 1000 * 60 * 5).toISOString();
+  // Test for 1hr minutes validity
+  const dateLessThan = new Date(Date.now() + 1000 * 60 * 60).toISOString();
     console.log("time create ", dateLessThan);
   const disposition = `${download ? "attachment" : "inline"}; filename="${filename}"`;
 
