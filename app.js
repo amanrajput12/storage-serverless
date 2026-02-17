@@ -10,6 +10,7 @@ import userRoutes from "./routes/userRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import checkAuth from "./middlewares/authMiddleware.js";
 import { connectDB } from "./config/db.js";
+import crypto from"crypto"
 
 
 await connectDB();
@@ -52,6 +53,8 @@ app.use(cors({
 
 
 app.post("/github-webhook", (req, res) => {
+    const calcualtedsingature = crypto.createHmac("sha256","Aman@123").update(JSON.stringify(req.body)).digest("hex");
+    console.log("calculated signture",calcualtedsingature)
    res.json({ message: "Deploy successful" });
   console.log("webhook", req.headers);
 
