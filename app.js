@@ -58,7 +58,7 @@ app.post("/github-webhook", (req, res) => {
   if(!givensignature){
   return res.status(403).json({error:"Invalid signature"})
   }
-    const calcualtedsingature= 'sha256'+ crypto.createHmac("sha256","Aman@123").update(JSON.stringify(req.body)).digest("hex");
+    const calcualtedsingature= 'sha256='+ crypto.createHmac("sha256","Aman@123").update(JSON.stringify(req.body)).digest("hex");
     console.log("calculated signture",calcualtedsingature)
     if(givensignature!==calcualtedsingature){
       return res.status(403).json({error:"Invalid signature"})
