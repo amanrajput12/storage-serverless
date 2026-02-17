@@ -54,6 +54,7 @@ app.post("/github-webhook",(req,res)=>{
 const bashchildprocess = spawn("bash",["/home/ubuntu/Automate-CI-CD/deploy-frontend.sh"]);
 
 bashchildprocess.stdout.on("data",(data)=>{
+  res.json({message:"got data"});
     console.log("got stdout data")
     process.stdout.write(data);
 })
@@ -72,6 +73,8 @@ bashchildprocess.on("close",(code)=>{
     else{
         console.log("script fail");
     }
+
+
 
 })
 
