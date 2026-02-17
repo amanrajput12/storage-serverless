@@ -49,36 +49,40 @@ app.use(cors({
   
 
 // automate route
-app.post("/github-webhook",(req,res)=>{
-  
-const bashchildprocess = spawn("bash",["/home/ubuntu/Automate-CI-CD/deploy-frontend.sh"]);
 
-bashchildprocess.stdout.on("data",(data)=>{
-  res.json({message:"got data"});
-    console.log("got stdout data")
-    process.stdout.write(data);
-})
 
-bashchildprocess.on("error",(err)=>{
-    // console.log("error are",err)
-process.stderr.write(err)
+app.post("/github-webhook", (req, res) => {
+  console.log("webhook", req.headers);
+
+  const bashchildprocess = spawn("bash", [
+    "/home/ubuntu/Automate-CI-CD/deploy-frontend.sh"
+  ]);
+
+  bashchildprocess.stdout.on("data", (data) => {
+    console.log("stdout:", data.toString());
+  });
+
+  bashchildprocess.stderr.on("data", (data) => {
+    console.error("stderr:", data.toString());
+  });
+
+  bashchildprocess.on("error", (err) => {
+    console.error("Process error:", err);
+    return res.status(500).json({ error: "Script failed to start" });
+  });
+
+  bashchildprocess.on("close", (code) => {
+    console.log("Exit code:", code);
+
+    if (code === 0) {
+      return res.json({ message: "Deploy successful" });
+    } else {
+      return res.status(500).json({ message: "Deploy failed" });
+    }
+  });
 });
 
 
-bashchildprocess.on("close",(code)=>{
-    console.log(code);
-    if(code==0){
-        console.log("script execute sucesss")
-    }
-    else{
-        console.log("script fail");
-    }
-
-
-
-})
-
-})
 
 app.get("/",(req,res)=>{
 res.json({message:"Hello Aman"})
