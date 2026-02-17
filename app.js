@@ -52,6 +52,7 @@ app.use(cors({
 
 
 app.post("/github-webhook", (req, res) => {
+   res.json({ message: "Deploy successful" });
   console.log("webhook", req.headers);
 
   const bashchildprocess = spawn("bash", [
@@ -75,7 +76,7 @@ app.post("/github-webhook", (req, res) => {
     console.log("Exit code:", code);
 
     if (code === 0) {
-      return res.json({ message: "Deploy successful" });
+    
     } else {
       return res.status(500).json({ message: "Deploy failed" });
     }
