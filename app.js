@@ -1,6 +1,6 @@
 
 import './config/env.js';
-
+import {spawn} from "child_process"
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
@@ -48,6 +48,34 @@ app.use(cors({
 }));
   
 
+// automate route
+app.post("/github-webhook",(req,res)=>{
+  
+const bashchildprocess = spawn("bash",["/home/ubuntu/Automate-CI-CD/deploy-frontend.sh"]);
+
+bashchildprocess.stdout.on("data",(data)=>{
+    console.log("got stdout data")
+    process.stdout.write(data);
+})
+
+bashchildprocess.on("error",(err)=>{
+    // console.log("error are",err)
+process.stderr.write(err)
+});
+
+
+bashchildprocess.on("close",(code)=>{
+    console.log(code);
+    if(code==0){
+        console.log("script execute sucesss")
+    }
+    else{
+        console.log("script fail");
+    }
+
+})
+
+})
 
 app.get("/",(req,res)=>{
 res.json({message:"Hello Aman"})
