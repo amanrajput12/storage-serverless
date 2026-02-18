@@ -66,9 +66,18 @@ app.post("/github-webhook", (req, res) => {
    res.json({ message: "Deploy successful" });
   console.log("webhook", req.headers);
 
-  const bashchildprocess = spawn("bash", [
+ let bashchildprocess
+       if(req.body.repository.name=="Automate-CI-CD"){
+   bashchildprocess = spawn("bash", [
     "/home/ubuntu/Automate-CI-CD/deploy-frontend.sh"
   ]);
+}
+else{
+  bashchildprocess =spawn("bash",[
+     "/home/ubuntu/storageapp-backend/deploy-backend.sh"
+  ])
+}
+
 
   bashchildprocess.stdout.on("data", (data) => {
     console.log("stdout:", data.toString());
