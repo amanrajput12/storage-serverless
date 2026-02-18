@@ -28,7 +28,7 @@ jobs:
       # 3 Deploy to remote server 
       - name: Deploy backend on Ec2
         run: |
-            ssh "${SSH_USER}@${SSH_HOST}" 'bash -s' << 'EOF'
+            ssh "${SSH_USER}@${SSH_HOST}" 'bash -s' << EOF
              set -e
              
              cd /home/ubuntu/storageapp-backend
@@ -41,4 +41,4 @@ jobs:
              pm2 reload StorageApp
 
              echo "Backend Deployed Sucessfully ..."
-            'EOF'
+            EOF
