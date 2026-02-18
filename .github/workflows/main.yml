@@ -1,0 +1,46 @@
+name: Deploy StorageApp Backend
+
+on: [push, workflow_dispatch]
+
+jobs:
+  Deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      SSH_HOST: 13.233.202.189
+      SSH_USER: ubuntu
+      REMOTE_APP_DIR: /home/ubuntu/storageapp-backend
+      PM2_APP_NAME: StorageApp
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{secrets.SSH_PRIVATE_KEY}}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+          # Add server host key so SSH does not ask for confirmation
+          ssh-keyscan -H "$SSH_HOST" >> ~/.ssh/known_hosts
+
+      # 3 Deploy to remote server 
+      - name: Deploy backend on Ec2
+        run:
+            ssh "${SSH_USER}@${SSH_HOST}" 'bash -s' << 'EOF'
+             set -e
+             
+             cd /home/ubuntu/storageapp-backend
+             git pull
+
+             echo "Installing backend dependencies (npm ci)"
+             npm ci --no-audit --no-fund
+
+             echo "Reloading PM2 app.."
+             pm2 reload StorageApp
+
+             echo "Backend Deployed Sucessfully ..."
+
+
+            'EOF'
