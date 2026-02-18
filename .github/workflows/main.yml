@@ -27,7 +27,7 @@ jobs:
 
       # 3 Deploy to remote server 
       - name: Deploy backend on Ec2
-        run:
+        run: |
             ssh "${SSH_USER}@${SSH_HOST}" 'bash -s' << 'EOF'
              set -e
              
@@ -41,6 +41,4 @@ jobs:
              pm2 reload StorageApp
 
              echo "Backend Deployed Sucessfully ..."
-
-
             'EOF'
