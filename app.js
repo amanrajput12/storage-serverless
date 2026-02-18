@@ -106,7 +106,7 @@ else{
 
 
 app.get("/",(req,res)=>{
-res.json({message:"Hello Aman"})
+res.json({message:"Hello Aman Rajput this side"})
 
 }
 );
