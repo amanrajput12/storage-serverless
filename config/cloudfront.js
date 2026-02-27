@@ -1,5 +1,5 @@
   
-const Privatekey = process.env.CLOUDFRONT_PRIVATE_KEY;
+const Privatekey =atob(process.env.CLOUDFRONT_PRIVATE_KEY);
 // console.log("Cloudfront config file loaded, env var is ");
 // import K3CE296GJ496XA
 import { getSignedUrl } from "@aws-sdk/cloudfront-signer";

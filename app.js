@@ -1,5 +1,5 @@
 
-import './config/env.js';
+
 import {spawn} from "child_process"
 import express from "express";
 import cors from "cors";
@@ -9,11 +9,11 @@ import fileRoutes from "./routes/fileRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import checkAuth from "./middlewares/authMiddleware.js";
-import { connectDB } from "./config/db.js";
+
 import crypto from"crypto"
 
 
-await connectDB();
+
 
 const PORT = process.env.PORT;
 console.log("Server starting on port", PORT,process.env.CLOUDFRONT_PRIVATE_KEY );
@@ -121,9 +121,10 @@ app.use((err, req, res, next) => {
   res.json(err);
 });
 
-app.listen(PORT, () => {
-  console.log(`Server Started`);
-});
+
+
+
+export default app;
 
 
 // https://stackoverflow.com/questions/18367824/how-to-cancel-http-upload-from-data-events
