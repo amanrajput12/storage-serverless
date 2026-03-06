@@ -9,7 +9,8 @@ import fileRoutes from "./routes/fileRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import checkAuth from "./middlewares/authMiddleware.js";
-
+import SubscriptionRoutes from "./routes/subscriptionRoutes.js"
+import WebhookRoute from "./routes/webhookRoutes.js"
 import crypto from"crypto"
 
 
@@ -33,24 +34,29 @@ const allowedOrigins = [
   process.env.CLIENT_URL_3
 ].filter(Boolean);
 
-app.use(cors({
-  origin: function (origin, callback) {
+// app.use(cors({
+//   origin: function (origin, callback) {
 
-    if (!origin) return callback(null, true);
+//     if (!origin) return callback(null, true);
 
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    }
+//     if (allowedOrigins.includes(origin)) {
+//       return callback(null, true);
+//     }
 
-    console.log("Blocked by CORS:", origin);
-    callback(new Error("Not allowed by CORS"));
-  },
-  credentials: true   // ⭐ VERY IMPORTANT
-}));
+//     console.log("Blocked by CORS:", origin);
+//     callback(new Error("Not allowed by CORS"));
+//   },
+//   credentials: true   // ⭐ VERY IMPORTANT
+// }));
   
 
 // automate route
 
+
+app.use(cors({
+  origin: "http://localhost:5173",
+  credentials: true
+}))
 
 app.post("/github-webhook", (req, res) => {
   const givensignature = req.headers["x-hub-signature-256"];
@@ -114,6 +120,9 @@ app.use("/directory", checkAuth, directoryRoutes);
 app.use("/file", checkAuth, fileRoutes);
 app.use("/", userRoutes);
 app.use("/auth", authRoutes);
+app.use("/subscription",checkAuth,SubscriptionRoutes)
+app.use("/webhook",WebhookRoute)
+
 
 app.use((err, req, res, next) => {
   console.log(err);
