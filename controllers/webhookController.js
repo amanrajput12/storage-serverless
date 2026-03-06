@@ -4,6 +4,21 @@ import User from "../models/userModel.js";
 const PLANS ={
     "plan_SNhSGBTLMOkm3p":{
         storageQuotaBytes:1*1024**3
+    },
+    "plan_SNhTGloisjC2Bm":{
+        storageQuotaBytes:1*1024**3
+    },
+    "plan_SNx0Sfs0TALnYr":{
+        storageQuotaBytes:2*1024**3
+    },
+    "plan_SNx1HYOA7O01Gm":{
+        storageQuotaBytes:2*1024**3
+    },
+    "plan_SNx1zRHUI51P0B":{
+        storageQuotaBytes:5*1024**3
+    },
+    "lan_SNx2ZKhcaNZqso":{
+        storageQuotaBytes:5*1024**3
     }
 }
 
