@@ -2,22 +2,22 @@ import Razorpay from "razorpay";
 import Subscription from "../models/subscriptionModel.js";
 import User from "../models/userModel.js";
 const PLANS ={
-    "plan_SNhSGBTLMOkm3p":{
+    "plan_SOJLm4E5Shea62":{
         storageQuotaBytes:1*1024**3
     },
-    "plan_SNhTGloisjC2Bm":{
+    "plan_SOJNg8UJYUFjkm":{
         storageQuotaBytes:1*1024**3
     },
-    "plan_SNx0Sfs0TALnYr":{
+    "plan_SOJO9vGmUoMi6w":{
         storageQuotaBytes:2*1024**3
     },
-    "plan_SNx1HYOA7O01Gm":{
+    "plan_SOJP7x2KaKj2fx":{
         storageQuotaBytes:2*1024**3
     },
-    "plan_SNx1zRHUI51P0B":{
+    "plan_SNh9UZUuowdg3s":{
         storageQuotaBytes:5*1024**3
     },
-    "lan_SNx2ZKhcaNZqso":{
+    "plan_SOJQ5T3mmtXGNV":{
         storageQuotaBytes:5*1024**3
     }
 }
